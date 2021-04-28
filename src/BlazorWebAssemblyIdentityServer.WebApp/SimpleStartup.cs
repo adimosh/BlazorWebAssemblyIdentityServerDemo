@@ -6,6 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BlazorWebAssemblyIdentityServer.WebApp
 {
+    /// <summary>
+    /// This class is used solely for the purpose of &quot;dotnet ef&quot; core tools.
+    /// </summary>
     public class SimpleStartup
     {
         public IConfiguration Configuration { get; }

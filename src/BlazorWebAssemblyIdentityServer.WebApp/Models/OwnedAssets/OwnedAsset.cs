@@ -19,7 +19,7 @@ namespace BlazorWebAssemblyIdentityServer.WebApp.Models.OwnedAssets
         public double IndivisibleCommonPart { get; set; }
 
         [ConcurrencyCheck]
-        public DateTime LastChangedAt { get; set; }
+        public DateTime LastChangedAt { get; set; } = DateTime.UtcNow;
 
         [ForeignKey(nameof(LastChangedByUser))]
         public long LastChangedByUserId { get; set; }

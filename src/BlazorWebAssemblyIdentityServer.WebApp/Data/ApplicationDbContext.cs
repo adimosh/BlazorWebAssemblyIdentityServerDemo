@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 namespace BlazorWebAssemblyIdentityServer.WebApp.Data
 {
     /// <summary>
-    /// 
+    /// The main DB context of this application.
     /// </summary>
     /// <seealso cref="Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityDbContext{BlazorWebAssemblyIdentityServer.WebApp.Models.Identity.ApplicationUser, BlazorWebAssemblyIdentityServer.WebApp.Models.Identity.ApplicationRole, System.Int64, BlazorWebAssemblyIdentityServer.WebApp.Models.Identity.ApplicationUserClaim, BlazorWebAssemblyIdentityServer.WebApp.Models.Identity.ApplicationUserRole, BlazorWebAssemblyIdentityServer.WebApp.Models.Identity.ApplicationUserLogin, BlazorWebAssemblyIdentityServer.WebApp.Models.Identity.ApplicationRoleClaim, BlazorWebAssemblyIdentityServer.WebApp.Models.Identity.ApplicationUserToken}" />
     public abstract class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, long,

@@ -15,8 +15,17 @@ using Serilog.Sinks.SystemConsole.Themes;
 
 namespace BlazorWebAssemblyIdentityServer.WebApp
 {
+    /// <summary>
+    /// The static class containing the entry point to the application.
+    /// </summary>
     public static class Program
     {
+        /// <summary>
+        /// The entry point in the application.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">DbContext not created.</exception>
         public static int Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
@@ -67,6 +76,11 @@ namespace BlazorWebAssemblyIdentityServer.WebApp
             }
         }
 
+        /// <summary>
+        /// Creates the host builder. This method is used entirely for the benefit of &quot;dotnet ef&quot;.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <returns>A created host builder</returns>
         [UsedImplicitly]
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)

@@ -19,15 +19,38 @@ namespace BlazorWebAssemblyIdentityServer.WebApp
 {
     public class Startup
     {
+        /// <summary>
+        /// Gets the environment.
+        /// </summary>
+        /// <value>
+        /// The environment.
+        /// </value>
         public IWebHostEnvironment Environment { get; }
+
+        /// <summary>
+        /// Gets the current configuration.
+        /// </summary>
+        /// <value>
+        /// The current configuration.
+        /// </value>
         public IConfiguration Configuration { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Startup"/> class.
+        /// </summary>
+        /// <param name="environment">The environment.</param>
+        /// <param name="configuration">The configuration.</param>
         public Startup(IWebHostEnvironment environment, IConfiguration configuration)
         {
             this.Environment = environment;
             this.Configuration = configuration;
         }
 
+        /// <summary>
+        /// Configures the services.
+        /// </summary>
+        /// <param name="services">The services.</param>
+        /// <exception cref="InvalidOperationException">Could not properly discover the correct URL the application is running under.</exception>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
@@ -75,6 +98,10 @@ namespace BlazorWebAssemblyIdentityServer.WebApp
                     });
         }
 
+        /// <summary>
+        /// Configures the application.
+        /// </summary>
+        /// <param name="app">The application builder.</param>
         public void Configure(IApplicationBuilder app)
         {
             if (this.Environment.IsDevelopment())
