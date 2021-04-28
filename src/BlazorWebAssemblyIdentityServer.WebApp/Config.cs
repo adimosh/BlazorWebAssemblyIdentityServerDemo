@@ -28,37 +28,45 @@ namespace BlazorWebAssemblyIdentityServer.WebApp
 
         public static IEnumerable<IdentityServer4.Models.Client> CreateClients(string applicationUrl)
         {
-            List<IdentityServer4.Models.Client> clients = new();
-
-            clients.Add(new()
+            List<IdentityServer4.Models.Client> clients = new()
             {
-                ClientId = "BlazorWebAssemblyClient",
-                AllowedGrantTypes = GrantTypes.Code,
-                RequireClientSecret = false,
-                RequirePkce = true,
-                RedirectUris =
+                new()
                 {
-                    Flurl.Url.Combine(applicationUrl, "authentication", "login-callback")
-                },
-                PostLogoutRedirectUris =
-                {
-                    Flurl.Url.Combine(applicationUrl, "authentication", "logout-callback")
-                },
-                AllowOfflineAccess = true,
-                AllowedCorsOrigins =
-                {
-                    applicationUrl
-                },
-                AllowedScopes =
-                {
-                    IdentityServerConstants.StandardScopes.OpenId,
-                    IdentityServerConstants.StandardScopes.Profile,
-                    IdentityServerConstants.StandardScopes.Address,
-                    IdentityServerConstants.StandardScopes.Email,
-                    "datareadonly",
-                    "datamanipulation"
+                    ClientId = "BlazorWebAssemblyClient",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequireClientSecret = false,
+                    RequirePkce = true,
+                    RedirectUris =
+                    {
+                        Flurl.Url.Combine(
+                            applicationUrl,
+                            "authentication",
+                            "login-callback")
+                    },
+                    PostLogoutRedirectUris =
+                    {
+                        Flurl.Url.Combine(
+                            applicationUrl,
+                            "authentication",
+                            "logout-callback")
+                    },
+                    AllowOfflineAccess = true,
+                    AllowedCorsOrigins =
+                    {
+                        applicationUrl
+                    },
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Address,
+                        IdentityServerConstants.StandardScopes.Email,
+                        "datareadonly",
+                        "datamanipulation"
+                    }
                 }
-            });
+            };
+
 
             return clients.ToArray();
         }

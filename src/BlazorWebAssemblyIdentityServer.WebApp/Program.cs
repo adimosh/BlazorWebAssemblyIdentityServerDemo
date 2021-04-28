@@ -3,11 +3,9 @@
 
 
 using System;
-using BlazorWebAssemblyIdentityServer.WebApp.Data;
+using System.Diagnostics;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
@@ -48,18 +46,6 @@ namespace BlazorWebAssemblyIdentityServer.WebApp
                         webBuilder.UseStartup<Startup>();
                     }).Build();
 
-                Log.Information("Setting up database...");
-                using (var dc = host.Services.GetService<ApplicationDbContext>())
-                {
-                    if (dc == null)
-                    {
-                        Log.Error("Could not create DbContext.");
-                        throw new InvalidOperationException("DbContext not created.");
-                    }
-
-                    dc.Database.Migrate();
-                }
-
                 Log.Information("Starting host...");
                 host.Run();
 
@@ -84,7 +70,6 @@ namespace BlazorWebAssemblyIdentityServer.WebApp
         [UsedImplicitly]
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<SimpleStartup>();

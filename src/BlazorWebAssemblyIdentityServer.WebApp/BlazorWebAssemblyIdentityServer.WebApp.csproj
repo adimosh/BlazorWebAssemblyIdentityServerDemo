@@ -28,4 +28,8 @@
   <ItemGroup>
     <ProjectReference Include="..\BlazorWebAssemblyIdentityServer.Client\BlazorWebAssemblyIdentityServer.Client.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\Home\" />
+  </ItemGroup>
 </Project>

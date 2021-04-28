@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace IdentityServerHost.Quickstart.UI
 {
     [SecurityHeaders]
-    [Authorize]
+    [Authorize(Roles = "Administrators")]
     public class DiagnosticsController : Controller
     {
         public async Task<IActionResult> Index()

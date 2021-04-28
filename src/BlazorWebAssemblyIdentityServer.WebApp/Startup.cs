@@ -63,7 +63,7 @@ namespace BlazorWebAssemblyIdentityServer.WebApp
                     "Could not properly discover the correct URL the application is running under.");
             }
 
-            services.AddDbContext<ApplicationDbContext, NpgsqlApplicationDbContext>(ServiceLifetime.Transient);
+            services.SetDbContext();
 
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()

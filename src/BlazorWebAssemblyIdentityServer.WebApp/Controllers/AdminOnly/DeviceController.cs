@@ -19,7 +19,7 @@ using Microsoft.Extensions.Options;
 
 namespace IdentityServerHost.Quickstart.UI
 {
-    [Authorize]
+    [Authorize(Roles = "Administrators")]
     [SecurityHeaders]
     public class DeviceController : Controller
     {

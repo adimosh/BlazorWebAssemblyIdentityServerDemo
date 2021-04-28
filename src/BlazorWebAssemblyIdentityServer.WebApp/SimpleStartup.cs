@@ -20,7 +20,7 @@ namespace BlazorWebAssemblyIdentityServer.WebApp
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext, NpgsqlApplicationDbContext>(ServiceLifetime.Transient);
+            services.SetDbContext();
         }
 
         public void Configure(IApplicationBuilder app)
