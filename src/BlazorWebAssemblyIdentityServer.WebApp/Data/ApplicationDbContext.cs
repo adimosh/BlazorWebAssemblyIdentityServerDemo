@@ -26,7 +26,7 @@ namespace BlazorWebAssemblyIdentityServer.WebApp.Data
 
         protected IConfiguration Configuration => this.configuration;
 
-        //public DbSet<OwnedAsset> OwnedAssets { get; set; }
+        public DbSet<OwnedAsset> OwnedAssets { get; set; }
 
         //public DbSet<AssetIndivisiblePart> AssetIndivisibleParts { get; set; }
 

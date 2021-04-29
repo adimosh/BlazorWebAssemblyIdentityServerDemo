@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorWebAssemblyIdentityServer.WebApp", "BlazorWebAssemblyIdentityServer.WebApp\BlazorWebAssemblyIdentityServer.WebApp.csproj", "{E98285C0-E8ED-4479-919F-6DD004DB7ABA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorWebAssemblyIdentityServer.WebApp", "BlazorWebAssemblyIdentityServer.WebApp\BlazorWebAssemblyIdentityServer.WebApp.csproj", "{E98285C0-E8ED-4479-919F-6DD004DB7ABA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorWebAssemblyIdentityServer.Client", "BlazorWebAssemblyIdentityServer.Client\BlazorWebAssemblyIdentityServer.Client.csproj", "{E3793E6C-C0E0-493D-B5B1-C834F384B952}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorWebAssemblyIdentityServer.Client", "BlazorWebAssemblyIdentityServer.Client\BlazorWebAssemblyIdentityServer.Client.csproj", "{E3793E6C-C0E0-493D-B5B1-C834F384B952}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorWebAssemblyIdentityServer.Shared", "BlazorWebAssemblyIdentityServer.Shared\BlazorWebAssemblyIdentityServer.Shared.csproj", "{9B4B97EE-0E60-40A4-AFB0-15C5EFF36F00}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{E3793E6C-C0E0-493D-B5B1-C834F384B952}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3793E6C-C0E0-493D-B5B1-C834F384B952}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3793E6C-C0E0-493D-B5B1-C834F384B952}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B4B97EE-0E60-40A4-AFB0-15C5EFF36F00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B4B97EE-0E60-40A4-AFB0-15C5EFF36F00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B4B97EE-0E60-40A4-AFB0-15C5EFF36F00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B4B97EE-0E60-40A4-AFB0-15C5EFF36F00}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -20,6 +20,12 @@ namespace IdentityServerHost.Quickstart.UI
         private readonly IWebHostEnvironment _environment;
         private readonly ILogger _logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HomeController"/> class.
+        /// </summary>
+        /// <param name="interaction">The interaction.</param>
+        /// <param name="environment">The environment.</param>
+        /// <param name="logger">The logger.</param>
         public HomeController(IIdentityServerInteractionService interaction, IWebHostEnvironment environment, ILogger<HomeController> logger)
         {
             _interaction = interaction;

@@ -3,15 +3,17 @@ using System;
 using BlazorWebAssemblyIdentityServer.WebApp.Data.ConcreteImplementations.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace BlazorWebAssemblyIdentityServer.WebApp.Data.ConcreteImplementations.PostgreSQL.Migrations
 {
     [DbContext(typeof(NpgsqlApplicationDbContext))]
-    partial class NpgsqlApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210429104838_OwnedAssetsTable")]
+    partial class OwnedAssetsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
