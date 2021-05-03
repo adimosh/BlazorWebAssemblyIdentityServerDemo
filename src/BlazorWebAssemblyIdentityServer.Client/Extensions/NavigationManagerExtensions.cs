@@ -16,7 +16,7 @@ namespace BlazorWebAssemblyIdentityServer.Client.Extensions
             navigation.NavigateTo(
                 string.IsNullOrWhiteSpace(returnUrl)
                     ? "authentication/login"
-                    : $"authentication/login?returnUrl={Url.Encode(returnUrl)}",
+                    : $"authentication/login?returnUrl={Url.Encode(Url.Combine(navigation.BaseUri, returnUrl))}",
                 true);
         }
     }
