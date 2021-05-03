@@ -1,9 +1,30 @@
-﻿<h3>Assets</h3>
+﻿@using BlazorWebAssemblyIdentityServer.Client.Extensions
+@inject HttpClient client;
+@inject NavigationManager navigation;
 
-<RadzenGrid TItem="OwnedAssetDTO" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single" LoadData="LoadData">
+<h3>Assets</h3>
+
+<RadzenGrid TItem="OwnedAssetDTO" Data="data" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single" LoadData="LoadData">
+    <Columns>
+        <RadzenGridColumn TItem="OwnedAssetDTO" Property="Name" Title="Asset name" />
+        <RadzenGridColumn TItem="OwnedAssetDTO" Property="IndivisibleCommonPart" Title="Indivisible common part" />
+    </Columns>
 </RadzenGrid>
 
 @code {
+    OwnedAssetDTO[] data;
+
     async Task LoadData(LoadDataArgs args)
-    {}
+    {
+        var response = await client.GetAsync(args.AttachToUrl("OwnedAssets"), HttpCompletionOption.ResponseHeadersRead);
+
+        var result = response.InterpretStatusReturn(navigation);
+
+        if (!result)
+        {
+            return;
+        }
+
+        data = await response.Content.ReadFromJsonAsync<OwnedAssetDTO[]>();
+    }
 }
