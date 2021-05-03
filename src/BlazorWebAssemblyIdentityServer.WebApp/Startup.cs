@@ -4,7 +4,6 @@
 
 using System;
 using BlazorWebAssemblyIdentityServer.WebApp.Data;
-using BlazorWebAssemblyIdentityServer.WebApp.Data.ConcreteImplementations.PostgreSQL;
 using BlazorWebAssemblyIdentityServer.WebApp.Extensions;
 using BlazorWebAssemblyIdentityServer.WebApp.Models.Identity;
 using IdentityServer4;

@@ -28,14 +28,22 @@ namespace BlazorWebAssemblyIdentityServer.WebApp.Data
 
         public DbSet<OwnedAsset> OwnedAssets { get; set; }
 
-        //public DbSet<AssetIndivisiblePart> AssetIndivisibleParts { get; set; }
+        public DbSet<AssetIndivisiblePart> AssetIndivisibleParts { get; set; }
 
-        //public DbSet<AssetPartCategory> AssetPartCategories { get; set; }
+        public DbSet<AssetPartCategory> AssetPartCategories { get; set; }
 
-        //public DbSet<AssetIndivisiblePartCategoryAssociation> AssetPartCategoryAssociations { get; set; }
+        public DbSet<AssetIndivisiblePartCategoryAssociation> AssetPartCategoryAssociations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<AssetIndivisiblePartCategoryAssociation>()
+                .HasKey(
+                    p => new
+                    {
+                        p.AssetIndivisiblePartId,
+                        p.AssetPartCategoryId
+                    });
+
             builder.Entity<ApplicationRole>()
                 .HasData(
                     new ApplicationRole
