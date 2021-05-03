@@ -1,18 +1,45 @@
 ﻿@using BlazorWebAssemblyIdentityServer.Client.Extensions
+@using Flurl
 @inject HttpClient client;
 @inject NavigationManager navigation;
 
 <h3>Assets</h3>
 
-<RadzenGrid TItem="OwnedAssetDTO" Data="data" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single" LoadData="LoadData">
+<RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="New asset" Click="@InsertRow" />
+<RadzenGrid @ref="assetsGrid" TItem="OwnedAssetDTO" Data="data" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single" LoadData="LoadData"
+            RowUpdate="@(async args => await OnUpdateRow(args))" RowCreate="@(async args => await OnCreateRow(args))">
     <Columns>
         <RadzenGridColumn TItem="OwnedAssetDTO" Property="Name" Title="Asset name" />
         <RadzenGridColumn TItem="OwnedAssetDTO" Property="IndivisibleCommonPart" Title="Indivisible common part" />
+        <RadzenGridColumn TItem="OwnedAssetDTO" Context="sampleBlazorModelsSampleOrder" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="100px">
+            <Template Context="order">
+                <RadzenButton Icon="edit" Size="ButtonSize.Small" Click="@(args => EditRow(order))">
+                </RadzenButton>
+            </Template>
+            <EditTemplate Context="order">
+                <RadzenButton Icon="save" Size="ButtonSize.Small" Click="@((args) => SaveRow(order))">
+                </RadzenButton>
+                <RadzenButton Icon="cancel" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Secondary" Click="@((args) => CancelEdit(order))">
+                </RadzenButton>
+            </EditTemplate>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="OwnedAssetDTO" Context="order" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="70px">
+            <Template Context="order">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small" Click="@(async args => await DeleteRow(order))">
+                </RadzenButton>
+            </Template>
+            <EditTemplate Context="order">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small" Click="@(async args => await DeleteRow(order))">
+                </RadzenButton>
+            </EditTemplate>
+        </RadzenGridColumn>
     </Columns>
 </RadzenGrid>
 
 @code {
-    OwnedAssetDTO[] data;
+    RadzenGrid<OwnedAssetDTO> assetsGrid;
+
+    List<OwnedAssetDTO> data;
 
     async Task LoadData(LoadDataArgs args)
     {
@@ -25,6 +52,92 @@
             return;
         }
 
-        data = await response.Content.ReadFromJsonAsync<OwnedAssetDTO[]>();
+        data = (await response.Content.ReadFromJsonAsync<OwnedAssetDTO[]>())?.ToList();
+    }
+
+    void InsertRow()
+    {
+        assetsGrid.InsertRow(new OwnedAssetDTO());
+    }
+
+    void EditRow(OwnedAssetDTO asset)
+    {
+        assetsGrid.EditRow(asset);
+    }
+
+    void SaveRow(OwnedAssetDTO asset)
+    {
+        assetsGrid.UpdateRow(asset);
+    }
+
+    async ValueTask DeleteRow(OwnedAssetDTO asset)
+    {
+        if (data.Contains(asset))
+        {
+            if (asset.Id != default)
+            {
+                var response = await client.DeleteAsync(Url.Combine("OwnedAssets", asset.Id.ToString()));
+
+                var result = response.InterpretStatusReturn(navigation);
+
+                if (!result)
+                {
+                    return;
+                }
+            }
+
+            await assetsGrid.Reload();
+        }
+        else
+        {
+            assetsGrid.CancelEditRow(asset);
+        }
+    }
+
+    void CancelEdit(OwnedAssetDTO order)
+    {
+        assetsGrid.CancelEditRow(order);
+    }
+
+    async ValueTask OnUpdateRow(OwnedAssetDTO asset)
+    {
+        if (asset.Id != default)
+        {
+            var response = await client.PutAsync(Url.Combine("OwnedAssets", asset.Id.ToString()), JsonContent.Create(asset));
+
+            var result = response.InterpretStatusReturn(navigation);
+
+            if (!result)
+            {
+                return;
+            }
+        }
+        else
+        {
+            var response = await client.PostAsync("OwnedAssets", JsonContent.Create(asset));
+
+            var result = response.InterpretStatusReturn(navigation);
+
+            if (!result)
+            {
+                return;
+            }
+        }
+
+        await assetsGrid.Reload();
+    }
+
+    async ValueTask OnCreateRow(OwnedAssetDTO asset)
+    {
+        var response = await client.PostAsync("OwnedAssets", JsonContent.Create(asset));
+
+        var result = response.InterpretStatusReturn(navigation);
+
+        if (!result)
+        {
+            return;
+        }
+
+        await assetsGrid.Reload();
     }
 }
