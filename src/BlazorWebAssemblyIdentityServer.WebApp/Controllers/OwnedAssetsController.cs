@@ -10,8 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Z.EntityFramework.Plus;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace BlazorWebAssemblyIdentityServer.WebApp.Controllers
 {
     [Route("OwnedAssets")]
@@ -35,15 +33,20 @@ namespace BlazorWebAssemblyIdentityServer.WebApp.Controllers
                     // Validate by user
                     // TODO
 
+                    // Fetch data
+                    var data = (await this.DataContext.OwnedAssets.UseQueryElements(
+                            skip,
+                            top,
+                            orderBy,
+                            filter)
+                        .ToArrayAsync()).Select(p => (OwnedAssetDTO)p)
+                        .ToArray();
+
+                    int count = await this.DataContext.OwnedAssets.UseQueryElements(filter)
+                        .CountAsync();
+
                     // Return data
-                    return this.Ok(
-                        (await this.DataContext.OwnedAssets.UseQueryElements(
-                                skip,
-                                top,
-                                orderBy,
-                                filter)
-                            .ToArrayAsync()).Select(p => (OwnedAssetDTO)p)
-                        .ToArray());
+                    return this.Ok((Count: count, Data: data));
                 });
 
         // GET api/<OwnedAssetsController>/5

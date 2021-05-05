@@ -1,23 +1,28 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using System.Security.Claims
 
-@inject NavigationManager Navigation
-@inject SignOutSessionStateManager SignOutManager
+@inject NavigationManager _navigation
+@inject SignOutSessionStateManager _signOutManager
 
 <AuthorizeView>
     <Authorized>
-        Hello, @context.User.Identity.Name!
-        <button class="nav-link btn btn-link" @onclick="BeginSignOut">Log out</button>
+        <RadzenButton Icon="logout" Click="BeginSignOut">
+            @if (context.User.Claims.Any(p => p.Type == ClaimTypes.Email))
+            {
+                <RadzenGravatar Email="@(context.User.Claims.First(p => p.Type == ClaimTypes.Email).Value)" />
+            }@(context.User.Identity?.Name ?? "unknown") (log out)
+            </RadzenButton>
     </Authorized>
     <NotAuthorized>
-        <a href="authentication/login">Log in</a>
+        <RadzenButton Icon="login" Text="Log in" Click="@(() => _navigation.NavigateTo("authentication/login", true))" />
     </NotAuthorized>
 </AuthorizeView>
 
 @code{
     private async Task BeginSignOut(MouseEventArgs args)
     {
-        await SignOutManager.SetSignOutState();
-        Navigation.NavigateTo("authentication/logout");
+        await _signOutManager.SetSignOutState();
+        _navigation.NavigateTo("authentication/logout");
     }
 }

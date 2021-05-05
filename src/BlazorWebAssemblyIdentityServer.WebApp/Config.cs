@@ -50,7 +50,7 @@ namespace BlazorWebAssemblyIdentityServer.WebApp
                             "authentication",
                             "logout-callback")
                     },
-                    AllowOfflineAccess = true,
+                    AllowOfflineAccess = false,
                     AllowedCorsOrigins =
                     {
                         applicationUrl

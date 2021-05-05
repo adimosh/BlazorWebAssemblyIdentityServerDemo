@@ -40,5 +40,37 @@ namespace BlazorWebAssemblyIdentityServer.WebApp.Extensions
 
             return source;
         }
+
+        internal static IQueryable<TEntity> UseQueryElements<TEntity>(
+            this IQueryable<TEntity> source,
+            string orderBy = null,
+            string filter = null)
+            where TEntity : class
+        {
+            if (orderBy is not null or "")
+            {
+                source = source.OrderBy(orderBy);
+            }
+
+            if (filter is not null or "")
+            {
+                source = source.Where(filter);
+            }
+
+            return source;
+        }
+
+        internal static IQueryable<TEntity> UseQueryElements<TEntity>(
+            this IQueryable<TEntity> source,
+            string filter = null)
+            where TEntity : class
+        {
+            if (filter is not null or "")
+            {
+                source = source.Where(filter);
+            }
+
+            return source;
+        }
     }
 }

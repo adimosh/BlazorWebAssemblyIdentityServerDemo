@@ -25,8 +25,8 @@
                     </NavLink>
                 </Authorized>
                 <NotAuthorized>
-                    <NavLink class="nav-link" href="assets">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Assets
+                    <NavLink class="nav-link" href="authentication/login">
+                        <span class="oi oi-account-login" aria-hidden="true"></span> Assets
                     </NavLink>
                 </NotAuthorized>
             </AuthorizeView>
@@ -35,12 +35,12 @@
 </div>
 
 @code {
-    private bool collapseNavMenu = true;
+    private bool _collapseNavMenu = true;
 
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private string NavMenuCssClass => _collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu()
     {
-        collapseNavMenu = !collapseNavMenu;
+        _collapseNavMenu = !_collapseNavMenu;
     }
 }

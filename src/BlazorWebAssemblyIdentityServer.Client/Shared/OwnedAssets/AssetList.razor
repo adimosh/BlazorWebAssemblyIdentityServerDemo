@@ -1,16 +1,30 @@
 ﻿@using BlazorWebAssemblyIdentityServer.Client.Extensions
 @using Flurl
-@inject HttpClient client;
-@inject NavigationManager navigation;
+@inject HttpClient _client;
+@inject NavigationManager _navigation;
+@inject NotificationService _notifications;
 
 <h3>Assets</h3>
 
-<RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="New asset" Click="@InsertRow" />
-<RadzenGrid @ref="assetsGrid" TItem="OwnedAssetDTO" Data="data" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single" LoadData="LoadData"
-            RowUpdate="@(async args => await OnUpdateRow(args))" RowCreate="@(async args => await OnCreateRow(args))">
+<RadzenGrid @ref="_assetsGrid" TItem="OwnedAssetDTO" Data="@_data" Count="@_count" AllowFiltering="true" AllowPaging="true" PageSize="5"
+            AllowSorting="true" EditMode="DataGridEditMode.Single" LoadData="LoadData"
+            RowUpdate="OnUpdateRow">
     <Columns>
-        <RadzenGridColumn TItem="OwnedAssetDTO" Property="Name" Title="Asset name" />
-        <RadzenGridColumn TItem="OwnedAssetDTO" Property="IndivisibleCommonPart" Title="Indivisible common part" />
+        <RadzenGridColumn TItem="OwnedAssetDTO" Property="@nameof(OwnedAssetDTO.Id)" Filterable="false" Sortable="false">
+            <FooterTemplate>
+                <RadzenButton @ref="_addButton" Icon="add_circle_outline" Text="" Click="@InsertRow" />
+            </FooterTemplate>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="OwnedAssetDTO" Property="@nameof(OwnedAssetDTO.Id)" Title="Asset name">
+            <EditTemplate Context="asset">
+                <RadzenTextBox @bind-Value="asset.Name"/>
+            </EditTemplate>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="OwnedAssetDTO" Property="IndivisibleCommonPart" Title="Indivisible common part">
+            <EditTemplate Context="asset">
+                <RadzenNumeric @bind-Value="asset.IndivisibleCommonPart" Step="0.01" Placeholder="0.00" Min="0"/>
+            </EditTemplate>
+        </RadzenGridColumn>
         <RadzenGridColumn TItem="OwnedAssetDTO" Context="sampleBlazorModelsSampleOrder" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="100px">
             <Template Context="order">
                 <RadzenButton Icon="edit" Size="ButtonSize.Small" Click="@(args => EditRow(order))">
@@ -25,119 +39,187 @@
         </RadzenGridColumn>
         <RadzenGridColumn TItem="OwnedAssetDTO" Context="order" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="70px">
             <Template Context="order">
-                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small" Click="@(async args => await DeleteRow(order))">
-                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small" Click="@(async args => await DeleteRow(order))" />
+                
             </Template>
             <EditTemplate Context="order">
-                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small" Click="@(async args => await DeleteRow(order))">
-                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small" Click="@(async args => await DeleteRow(order))" />
             </EditTemplate>
         </RadzenGridColumn>
     </Columns>
 </RadzenGrid>
 
 @code {
-    RadzenGrid<OwnedAssetDTO> assetsGrid;
 
-    List<OwnedAssetDTO> data;
+    [CascadingParameter(Name = "OfflineMode")] bool OfflineMode { get; set; }
+
+    RadzenGrid<OwnedAssetDTO> _assetsGrid;
+    RadzenButton _addButton;
+
+    List<OwnedAssetDTO> _data;
+    int _count;
+    bool _adding;
 
     async Task LoadData(LoadDataArgs args)
     {
-        var response = await client.GetAsync(args.AttachToUrl("OwnedAssets"), HttpCompletionOption.ResponseHeadersRead);
-
-        var result = response.InterpretStatusReturn(navigation);
-
-        if (!result)
+        _addButton.Disabled = true;
+        try
         {
-            return;
-        }
+            if (_adding)
+            {
+                _adding = false;
+                _data.Add(new OwnedAssetDTO());
+                _count++;
+                await _assetsGrid.EditRow(_data.Last());
+            }
+            else
+            {
+                if (OfflineMode)
+                {
+                    if (_data == null)
+                    {
+                        _data = new List<OwnedAssetDTO>
+                    {
+                        new OwnedAssetDTO()
+                        {
+                            Id = 1,
+                            IndivisibleCommonPart = 0.5,
+                            Name = "aaa"
+                        },
+                        new OwnedAssetDTO()
+                        {
+                            Id = 2,
+                            IndivisibleCommonPart = 0.7,
+                            Name = "bbb"
+                        }
+                    };
+                        _count = _data.Count;
+                    }
+                }
+                else
+                {
+                    var response = await _client.GetAsync(args.AttachToUrl("OwnedAssets"), HttpCompletionOption.ResponseHeadersRead);
 
-        data = (await response.Content.ReadFromJsonAsync<OwnedAssetDTO[]>())?.ToList();
+                    var result = response.InterpretStatusReturn(_navigation, _notifications);
+
+                    if (result)
+                    {
+                        var responseBody = await response.Content.ReadFromJsonAsync<(int Count, OwnedAssetDTO[] Data)>();
+                        _data = responseBody.Data?.ToList() ?? new List<OwnedAssetDTO>();
+                        _count = responseBody.Count;
+                    }
+                    else
+                    {
+                        _data = new List<OwnedAssetDTO>();
+                        _count = 0;
+                    }
+                }
+            }
+        }
+        finally
+        {
+            _addButton.Disabled = false;
+        }
     }
 
-    void InsertRow()
+    void InsertRow(MouseEventArgs e)
     {
-        assetsGrid.InsertRow(new OwnedAssetDTO());
+        _adding = true;
+        _assetsGrid.Reload();
     }
 
     void EditRow(OwnedAssetDTO asset)
     {
-        assetsGrid.EditRow(asset);
+        _assetsGrid.EditRow(asset);
     }
 
     void SaveRow(OwnedAssetDTO asset)
     {
-        assetsGrid.UpdateRow(asset);
+        _assetsGrid.UpdateRow(asset);
     }
 
     async ValueTask DeleteRow(OwnedAssetDTO asset)
     {
-        if (data.Contains(asset))
+        if (_data.Contains(asset))
         {
-            if (asset.Id != default)
+            if (OfflineMode)
             {
-                var response = await client.DeleteAsync(Url.Combine("OwnedAssets", asset.Id.ToString()));
-
-                var result = response.InterpretStatusReturn(navigation);
-
-                if (!result)
-                {
-                    return;
-                }
+                _data.Remove(asset);
             }
+            else
+            {
+                _addButton.Disabled = true;
+                try
+                {
+                    if (asset.Id != default)
+                    {
+                        var response = await _client.DeleteAsync(Url.Combine("OwnedAssets", asset.Id.ToString()));
 
-            await assetsGrid.Reload();
+                        _ = response.InterpretStatusReturn(_navigation, _notifications);
+                    }
+                }
+                finally
+                {
+                    _addButton.Disabled = false;
+                }
+
+
+                await _assetsGrid.Reload();
+            }
         }
         else
         {
-            assetsGrid.CancelEditRow(asset);
+            _assetsGrid.CancelEditRow(asset);
         }
     }
 
     void CancelEdit(OwnedAssetDTO order)
     {
-        assetsGrid.CancelEditRow(order);
+        _assetsGrid.CancelEditRow(order);
     }
 
-    async ValueTask OnUpdateRow(OwnedAssetDTO asset)
+    async Task OnUpdateRow(OwnedAssetDTO asset)
     {
-        if (asset.Id != default)
+        _addButton.Disabled = true;
+        try
         {
-            var response = await client.PutAsync(Url.Combine("OwnedAssets", asset.Id.ToString()), JsonContent.Create(asset));
-
-            var result = response.InterpretStatusReturn(navigation);
-
-            if (!result)
+            if (asset.Id != default)
             {
-                return;
+                if (OfflineMode)
+                {
+                    var idx = _data.FindIndex(p => p.Id == asset.Id);
+                    _data[idx] = asset;
+                }
+                else
+                {
+                    var response = await _client.PutAsync(Url.Combine("OwnedAssets", asset.Id.ToString()), JsonContent.Create(asset));
+
+                    _ = response.InterpretStatusReturn(_navigation, _notifications);
+                }
+            }
+            else
+            {
+                if (OfflineMode)
+                {
+                    asset.Id = _data.Max(p => p.Id) + 1;
+                    if (!_data.Contains(asset))
+                    {
+                        _data.Add(asset);
+                    }
+                }
+                else
+                {
+                    var response = await _client.PostAsync("OwnedAssets", JsonContent.Create(asset));
+
+                    _ = response.InterpretStatusReturn(_navigation, _notifications);
+                }
             }
         }
-        else
+        finally
         {
-            var response = await client.PostAsync("OwnedAssets", JsonContent.Create(asset));
-
-            var result = response.InterpretStatusReturn(navigation);
-
-            if (!result)
-            {
-                return;
-            }
+            _addButton.Disabled = false;
         }
 
-        await assetsGrid.Reload();
-    }
-
-    async ValueTask OnCreateRow(OwnedAssetDTO asset)
-    {
-        var response = await client.PostAsync("OwnedAssets", JsonContent.Create(asset));
-
-        var result = response.InterpretStatusReturn(navigation);
-
-        if (!result)
-        {
-            return;
-        }
-
-        await assetsGrid.Reload();
+        await _assetsGrid.Reload();
     }
 }

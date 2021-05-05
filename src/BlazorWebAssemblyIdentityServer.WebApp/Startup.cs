@@ -3,10 +3,14 @@
 
 
 using System;
+using System.Net;
+using System.Threading.Tasks;
 using BlazorWebAssemblyIdentityServer.WebApp.Data;
 using BlazorWebAssemblyIdentityServer.WebApp.Extensions;
 using BlazorWebAssemblyIdentityServer.WebApp.Models.Identity;
 using IdentityServer4;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -95,6 +99,22 @@ namespace BlazorWebAssemblyIdentityServer.WebApp
                         options.AppId = this.Configuration["Authentication:Facebook:AppId"];
                         options.AppSecret = this.Configuration["Authentication:Facebook:AppSecret"];
                     });
+
+            services.ConfigureApplicationCookie(
+                options =>
+                {
+                    options.Events.OnRedirectToAccessDenied = ReplaceRedirector(HttpStatusCode.Forbidden, options.Events.OnRedirectToAccessDenied);
+                });
+
+            static Func<RedirectContext<CookieAuthenticationOptions>, Task> ReplaceRedirector(HttpStatusCode statusCode, Func<RedirectContext<CookieAuthenticationOptions>, Task> existingRedirector) =>
+                context => {
+                    // TODO: This is a hack for the OwnedAssets controller
+                    if (context.Request.Path.StartsWithSegments("/ownedassets")) {
+                        context.Response.StatusCode = (int)statusCode;
+                        return Task.CompletedTask;
+                    }
+                    return existingRedirector(context);
+                };
         }
 
         /// <summary>

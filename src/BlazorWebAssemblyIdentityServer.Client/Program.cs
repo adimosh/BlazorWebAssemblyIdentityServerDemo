@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Radzen;
 
 namespace BlazorWebAssemblyIdentityServer.Client
 {
@@ -20,6 +21,8 @@ namespace BlazorWebAssemblyIdentityServer.Client
             {
                 builder.Configuration.Bind("oidc", options.ProviderOptions);
             });
+
+            builder.Services.AddScoped<NotificationService>();
 
             await builder.Build().RunAsync();
         }

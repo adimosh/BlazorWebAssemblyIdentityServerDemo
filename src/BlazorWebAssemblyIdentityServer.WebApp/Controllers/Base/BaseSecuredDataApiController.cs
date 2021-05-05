@@ -27,11 +27,9 @@ namespace BlazorWebAssemblyIdentityServer.WebApp.Controllers
 
         protected ApplicationDbContext DataContext { get; }
 
-        protected RequestChain StartChain()
-        {
-            return new RequestChain(
+        protected RequestChain StartChain() =>
+            new(
                 this,
                 this.userManager);
-        }
     }
 }
